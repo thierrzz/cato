@@ -84,6 +84,12 @@ function init() {
   initModels();
 }
 
+document.addEventListener('DOMContentLoaded', (event) => {
+  const recordButton = document.getElementById('recordButton'); // Make sure this ID matches your button's ID in Webflow
+  recordButton.addEventListener('click', onClickRecord);
+});
+
+
 function initObjects() {
   WebMidi.enable(function (err) {
     if (err) {
@@ -125,7 +131,7 @@ function initObjects() {
     element.addEventListener('click', () => {
       if (playerMaster.isPlaying()) {
         stopPlayerNum(containerId);
-        element.style.backgroundImage = 'url(assets/images/play.svg)';
+        element.style.backgroundImage = 'url(https://raw.githubusercontent.com/thierrzz/cato/add-license-1/assets/images/play.svg?token=GHSAT0AAAAAACN5R6IGEEZHWIYV6SYDGNIQZOGO22Q)';
       } else {
         startPlayerNum(containerId);
       }
@@ -143,6 +149,13 @@ function initObjects() {
     var containerId = parseInt(element.id.split('_')[1]);
     element.addEventListener('click', () => {
       exportSong(visualizerArr[containerId].noteSequence);
+    });
+  });
+
+  $('.theme').each((index, element) => {
+    var themeId = parseInt(element.id.split('_')[1]);
+    element.addEventListener('click', () => {
+      document.body.className = 'colorScheme' + themeId;
     });
   });
 
@@ -218,9 +231,9 @@ function initObjects() {
 
 function initModels() {
   tf = mm.tf;
-  onsets_frames_uni = new mm.OnsetsAndFrames('assets/models/onsets_frames_uni');
-  trio_4bar = new mm.MusicVAE('assets/models/trio_4bar');
-  multitrack_chords = new mm.MusicVAE('assets/models/multitrack_chords');
+  onsets_frames_uni = new mm.OnsetsAndFrames('https://thierrzz.github.io/cato/assets/models/onsets_frames_uni');
+  trio_4bar = new mm.MusicVAE(	
+  multitrack_chords = new mm.MusicVAE('https://thierrzz.github.io/cato/assets/models/multitrack_chords');
   midiRecorder = new mm.Recorder();
   loadMultitrack();
   tsynth = new Tone.FMSynth({
@@ -239,7 +252,7 @@ function initModels() {
   }).toMaster();
   let soundFontUrl = 'https://storage.googleapis.com/download.magenta.tensorflow.org/soundfonts_js/sgm_plus';
   if (runLocal) {
-    soundFontUrl = 'assets/sounds/sgm_plus'; 
+    soundFontUrl = 'https://thierrzz.github.io/cato/assets/sounds/sgm_plus'; 
   }
   playerMaster = new mm.SoundFontPlayer(soundFontUrl, globalCompressor, programMap, drumMap);  
   playerMaster.callbackObject = {
@@ -253,13 +266,13 @@ function initModels() {
         containerObj.scrollLeft = currentNotePosition - 20;
       }
       let playObj = window['play_' + nowPlaying];
-      playObj.style.backgroundImage = 'url(assets/images/stop.svg)';
+      playObj.style.backgroundImage = 'url(https://raw.githubusercontent.com/thierrzz/cato/add-license-1/assets/images/stop.svg?token=GHSAT0AAAAAACN5R6IGROY6O63SOCVXA5MGZOGO6QQ)';
     },
     stop: () => {
       let containerObj = window['container_' + nowPlaying];
       containerObj.classList.remove('playing');
       let playObj = window['play_' + nowPlaying];
-      playObj.style.backgroundImage = 'url(assets/images/play.svg)';
+      playObj.style.backgroundImage = 'url(https://raw.githubusercontent.com/thierrzz/cato/add-license-1/assets/images/play.svg?token=GHSAT0AAAAAACN5R6IGEEZHWIYV6SYDGNIQZOGO22Q)';
     }
   };
   Promise.all([
@@ -469,9 +482,9 @@ function truncateNumber(decimal) {
 
 function displayPrediction(pred) {
   refGenre.innerText = pred[0];
-  refDance.innerText = truncateNumber(pred[1][0]);
-  refRock.innerText = truncateNumber(pred[1][1]);
-  refJazz.innerText = truncateNumber(pred[1][2]);
+  refDance.innerText = truncateNumber(pred[1][0])*100 + '%';
+  refRock.innerText = truncateNumber(pred[1][1])*100 + '%';
+  refJazz.innerText = truncateNumber(pred[1][2])*100 + '%';
 }
 
 function displayChords(chordRes) {
@@ -1633,7 +1646,7 @@ async function predict_genre(vector) {
     //vector2 = [[52., 52., 52., 52., 50., 50., 50., 50., 50., 50., 50., 50., 52., 52., 52., 52., 52., 52., 52., 52.,  0.,  0.,  0.,  0.,  0.,  0., 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 0.,  0.,  0.,  0.,  0., 47., 47., 47., 47., 47., 47., 47., 47., 45., 45., 45., 45., 45., 45., 45., 45.,  0.,  0.,  0.,  0.]];
   }
   const genres = ['electronic', 'rock', 'jazz'];
-  const model = await tf.loadModel('assets/models/genre/model.json');
+  const model = await tf.loadModel('https://raw.githubusercontent.com/thierrzz/cato/add-license-1/assets/models/genre/model.json?token=GHSAT0AAAAAACN5R6IHYRGYJE2IQEAFX6AAZOGO55A');
   const example = tf.tensor(vector);
   const prediction = model.predict(example);
   const readable_output = prediction.dataSync();
